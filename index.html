@@ -5,40 +5,49 @@
     <meta charset="utf-8">
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
+    
     <style>
-      body { margin: 0; overflow: hidden; font-family: sans-serif; }
-      #scanning-overlay { display: flex; align-items: center; justify-content: center; position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: rgba(0,0,0,0.7); color: white; z-index: 2; font-size: 18px; text-align: center; padding: 20px; }
-      #email-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); align-items: center; justify-content: center; }
-      .modal-content { background-color: white; padding: 30px; border-radius: 12px; text-align: center; width: 85%; max-width: 320px; }
-      .modal-button { display: flex; align-items: center; justify-content: center; width: 100%; padding: 14px; margin-bottom: 12px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600; }
-      .btn-send { background-color: #4CAF50; color: white; }
-      .btn-copy { background-color: #2196F3; color: white; }
-      .btn-close { background-color: #757575; color: white; margin-top: 10px; }
+      body { margin: 0; overflow: hidden; }
+      /* หน้าจอ Loading */
+      #scanning-overlay { 
+        display: flex; align-items: center; justify-content: center; 
+        position: absolute; left: 0; right: 0; top: 0; bottom: 0; 
+        background: rgba(0,0,0,0.7); color: white; z-index: 2; 
+        font-family: sans-serif; font-size: 18px;
+      }
+      /* เมื่อสแกนติด ให้ซ่อนข้อความ */
+      #scanning-overlay.hidden { display: none; }
+
+      /* Popup สำหรับ Email */
+      #email-modal { 
+        display: none; position: fixed; z-index: 1000; left: 0; top: 0; 
+        width: 100%; height: 100%; background: rgba(0,0,0,0.8); 
+        align-items: center; justify-content: center; font-family: sans-serif;
+      }
+      .modal-content { background: white; padding: 25px; border-radius: 12px; text-align: center; width: 280px; }
+      .modal-button { 
+        display: block; width: 100%; padding: 12px; margin: 10px 0; 
+        border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;
+      }
     </style>
   </head>
-  
   <body>
+
     <div id="scanning-overlay">Please point your camera at the business card...</div>
 
     <div id="email-modal">
       <div class="modal-content">
-        <h3>Choose an action</h3>
-        <button class="modal-button btn-send" onclick="sendEmail('pkp.stws@gmail.com')">Send Email</button>
-        <button class="modal-button btn-copy" onclick="copyEmail('pkp.stws@gmail.com')">Copy Email</button>
-        <button class="modal-button btn-close" onclick="closeModal()">Close</button>
+        <h3 style="margin-top:0">Contact via Email</h3>
+        <button class="modal-button" style="background:#4CAF50;color:white;" onclick="window.location.href='mailto:pkp.stws@gmail.com'">Send Email</button>
+        <button class="modal-button" style="background:#2196F3;color:white;" onclick="copyEmail('pkp.stws@gmail.com')">Copy Email</button>
+        <button class="modal-button" style="background:#757575;color:white;" onclick="closeModal()">Close</button>
       </div>
     </div>
 
     <a-scene 
       mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: #scanning-overlay;" 
-      color-space="sRGB" 
-      renderer="colorManagement: true, physicallyCorrectLights" 
-      vr-mode-ui="enabled: false" 
-      device-orientation-permission-ui="enabled: false"
-      raycaster="objects: .clickable"
-      cursor="fuse: false; rayOrigin: mouse;">
+      color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" 
+      vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
       
       <a-assets>
         <img id="portfolioIcon" src="porfolio.png">
@@ -46,33 +55,45 @@
         <img id="emailIcon" src="envelope.png">
       </a-assets>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
 
       <a-entity mindar-image-target="targetIndex: 0">
-        
-        <a-image class="clickable" src="#portfolioIcon" position="-0.4 0.4 0.1" height="0.25" width="0.25"
+        <a-image class="clickable" src="#portfolioIcon" position="-0.4 0.4 0.1" height="0.25" width="0.25" 
                  onclick="window.open('https://drive.google.com/file/d/10mUyds_UDyGT82LLpQNxP7nT_0qHzfcn/view?usp=drive_link', '_blank')"></a-image>
-
-        <a-image class="clickable" src="#phoneIcon" position="0.4 0.4 0.1" height="0.25" width="0.25"
+        
+        <a-image class="clickable" src="#phoneIcon" position="0.4 0.4 0.1" height="0.25" width="0.25" 
                  onclick="window.location.href='tel:0624657402'"></a-image>
-
-        <a-image class="clickable" src="#emailIcon" position="0.4 -0.4 0.1" height="0.25" width="0.25"
+        
+        <a-image class="clickable" src="#emailIcon" position="0.4 -0.4 0.1" height="0.25" width="0.25" 
                  onclick="openModal()"></a-image>
-
       </a-entity>
     </a-scene>
 
     <script>
       const modal = document.getElementById('email-modal');
+      const overlay = document.getElementById('scanning-overlay');
+
       function openModal() { modal.style.display = 'flex'; }
       function closeModal() { modal.style.display = 'none'; }
-      function sendEmail(email) { window.location.href = `mailto:${email}`; closeModal(); }
+      
       function copyEmail(email) {
         navigator.clipboard.writeText(email).then(() => {
-          alert('Email copied!');
+          alert('Email copied to clipboard!');
           closeModal();
         });
       }
+
+      // ตรวจจับเมื่อสแกนเจอภาพ ให้ซ่อนคำว่า Please point...
+      document.querySelector('a-scene').addEventListener("targetFound", event => {
+        console.log("target found");
+        overlay.classList.add("hidden");
+      });
+
+      // ตรวจจับเมื่อสแกนหลุด ให้กลับมาแสดงคำแนะนำใหม่
+      document.querySelector('a-scene').addEventListener("targetLost", event => {
+        console.log("target lost");
+        overlay.classList.remove("hidden");
+      });
     </script>
   </body>
 </html>
