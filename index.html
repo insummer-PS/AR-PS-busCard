@@ -53,6 +53,7 @@
         <img id="portfolioIcon" src="porfolio.png">
         <img id="phoneIcon" src="smartphone.png">
         <img id="emailIcon" src="envelope.png">
+        <img id="lineIcon" src="line.png">
       </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;" raycaster="far: 10000; objects: .clickable"></a-camera>
@@ -66,6 +67,9 @@
         
         <a-image class="clickable" src="#emailIcon" position="0.4 -0.4 0.1" height="0.25" width="0.25" 
                  onclick="openModal()"></a-image>
+        
+        <a-image class="clickable" src="#line" position="0.4 -0.4 0.1" height="0.25" width="0.25" 
+           onclick="window.open('https://line.me/ti/p/~insummerpale', '_blank')"></a-image>
       </a-entity>
     </a-scene>
 
